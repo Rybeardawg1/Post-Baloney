@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-// MagnetMeta stores parsed magnet link data
 type MagnetMeta struct {
 	InfoHash string
 	Name     string
@@ -14,7 +13,6 @@ type MagnetMeta struct {
 	Size     string
 }
 
-// ParseMagnetLink extracts details from a magnet URI
 func ParseMagnetLink(magnetURI string) (*MagnetMeta, error) {
 	parsedURL, err := url.Parse(magnetURI)
 	if err != nil {
