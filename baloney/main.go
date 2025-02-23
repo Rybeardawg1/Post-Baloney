@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/Rybeardawg1/Post-Baloney/baloney/parser"
+	"github.com/Rybeardawg1/Post-Baloney/baloney/peers"
 )
 
 const version = "1.0.0"
@@ -154,17 +157,31 @@ func main() {
 	}
 
 	if *torrentFile == "" && *magnetLink == "" {
-		fmt.Println("Error: You must provide either a .torrent file (-t) or a magnet link (-m).")
 		flag.Usage()
 		os.Exit(1)
 	}
 
 	if *torrentFile != "" {
 		fmt.Println("Torrent file:", *torrentFile)
+		parser.ParseTorrentFile(*torrentFile)
 	}
+
 	if *magnetLink != "" {
-		fmt.Println("Magnet link:", *magnetLink)
+		// fmt.Println("Magnet link:", *magnetLink)
+		parsedData, err := parser.ParseMagnetLink(*magnetLink)
+
+		if err != nil {
+			fmt.Printf("Error: %s", err)
+		}
+
+		fmt.Println("InfoHash: ", parsedData.InfoHash)
+		fmt.Println("Name: ", parsedData.Name)
+		fmt.Println("Trackers: ", parsedData.Trackers)
+		fmt.Println("Size: ", parsedData.Size)
+
+		peers.FindPeers(peers.MagnetMeta(*parsedData))
 	}
+
 	if *downloadPath != "" {
 		fmt.Println("Download path:", *downloadPath)
 	}
